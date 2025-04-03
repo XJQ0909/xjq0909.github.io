@@ -1,3 +1,16 @@
+// for markdown code render
+marked.setOptions({
+    highlight: function(code, lang) {
+        const language = lang || 'javascript';
+        try {
+            return hljs.highlight(code, { language }).value;
+        } catch (e) {
+            console.error('Highlight.js error:', e);
+            return code;
+        }
+    }
+});
+
 function toggleBlog(blogId, blogFile) {
     const content = document.getElementById(`content-${blogId}`);
     const button = document.querySelector(`#${blogId} .toggle-btn`);
@@ -23,6 +36,11 @@ function loadBlogContent(blogName, contentId) {
         .then(mdContent => {
             const htmlContent = marked.parse(mdContent); // Convert Markdown using marked.js
             document.getElementById(contentId).innerHTML = htmlContent;
+
+
+            setTimeout(() => {
+                hljs.highlightAll(); // for markdown code render
+            }, 100);
         })
         .catch(error => console.error('Failed to load blog content:', error));
 }
@@ -63,7 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // All blog files are stored in the /blogs folder
         const blogFiles = [
             'How to Deploy a Full-Stack App on Vercel.md',
-            
+            'Data Science NumPy.md',
+            'Data Science Pandas.md'
+
         ];
 
         blogFiles.forEach((blogFile, index) => {
